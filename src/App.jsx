@@ -2,6 +2,7 @@ import { CircularProgress, createTheme, CssBaseline, Stack, ThemeProvider } from
 import { lazy, Suspense, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import "./App.css";
 import { themeSettings } from "./theme";
 
 

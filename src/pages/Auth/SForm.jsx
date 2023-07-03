@@ -33,7 +33,6 @@ const registerSchema = yup.object().shape({
     about: yup.string(),
 });
 
-
 const initialRegisterValues = {
     fName: "",
     lName: "",
@@ -297,7 +296,9 @@ function SForm() {
                         </Typography>
                         {isLogin ? (
                             <Typography fontFamily="serif" fontSize={17} color="Highlight" textAlign="end"
-                                sx={{ cursor: "pointer" }} onClick={() => navigate("/forgotpassword")}>Forget Password</Typography>
+                                sx={{ cursor: "pointer" }}
+                            // onClick={() => navigate("/forgotpassword")}
+                            >Forget Password</Typography>
                         ) : (
                             <Typography fontFamily="serif" fontSize={17} color="Highlight" textAlign="end"
                                 sx={{ cursor: "pointer" }}>Terms and conditions</Typography>)}
