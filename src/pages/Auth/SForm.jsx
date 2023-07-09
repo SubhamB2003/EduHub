@@ -256,7 +256,7 @@ function SForm() {
                                         {({ getRootProps, getInputProps }) => (
                                             <Box
                                                 {...getRootProps()}
-                                                border={`2px dashed ${palette.primary.main}`}
+                                                border={`2px dashed`}
                                                 p="0.2rem"
                                                 height="100%"
                                                 sx={{ "&:hover": { cursor: "pointer" } }}

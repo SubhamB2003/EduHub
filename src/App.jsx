@@ -1,10 +1,11 @@
-import { CircularProgress, createTheme, CssBaseline, Stack, ThemeProvider } from "@mui/material";
-import { lazy, Suspense, useMemo } from 'react';
+import { CircularProgress, CssBaseline, Stack } from "@mui/material";
+import { Suspense, lazy } from 'react';
 import { useSelector } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
+// import { themeSettings } from "./theme";
+
 import "./App.css";
 import BookPage from "./pages/Books";
-import { themeSettings } from "./theme";
 
 
 const AuthPage = lazy(() => import('./pages/Auth/index'));
@@ -22,12 +23,13 @@ const LoadingScreen = () => {
 
 function App() {
 
-  const mode = useSelector((state) => state.mode);
-  const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
+  // const mode = useSelector((state) => state.mode);
+  // const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
   const isAuth = Boolean(useSelector((state) => state.token));
 
   return (
-    <ThemeProvider theme={theme}>
+    <>
+      {/* <ThemeProvider theme={theme}> */}
       <CssBaseline />
       <BrowserRouter>
         <Suspense fallback={<LoadingScreen />}>
@@ -37,7 +39,8 @@ function App() {
           </Routes>
         </Suspense>
       </BrowserRouter>
-    </ThemeProvider>
+      {/* </ThemeProvider > */}
+    </>
   )
 }
 
