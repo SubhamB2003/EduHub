@@ -4,7 +4,9 @@ const initialState = {
     mode: "light",
     user: null,
     token: null,
-    posts: []
+    posts: [],
+    books: [],
+    cart: [],
 };
 
 export const dataSlice = createSlice({
@@ -24,6 +26,12 @@ export const dataSlice = createSlice({
         },
         setUser: (state, action) => {
             state.user = action.payload.user;
+        },
+        setBooks: (state, action) => {
+            state.books = action.payload.books;
+        },
+        setAddtoCart: (state, action) => {
+            state.cart = action.payload.cart;
         },
         setPosts: (state, action) => {
             state.posts = action.payload.posts;
@@ -47,6 +55,6 @@ export const dataSlice = createSlice({
 
 export const { setMode, setLogin, setLogout,
     setPosts, setSavePosts, setUser,
-    setUpdatePost } = dataSlice.actions;
+    setUpdatePost, setBooks, setAddtoCart } = dataSlice.actions;
 
 export default dataSlice.reducer;

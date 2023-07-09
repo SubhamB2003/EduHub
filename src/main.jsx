@@ -1,4 +1,6 @@
+/* eslint-disable no-unused-vars */
 import { configureStore } from "@reduxjs/toolkit";
+import React from "react";
 import ReactDOM from 'react-dom/client';
 import { Provider } from "react-redux";
 import {
@@ -10,7 +12,6 @@ import { PersistGate } from "redux-persist/integration/react";
 import storage from "redux-persist/lib/storage";
 import App from './App.jsx';
 import dataReducer from "./global/State";
-import React from "react";
 
 
 const persistConfig = { key: "root", storage, version: 1 };
@@ -26,11 +27,11 @@ const store = configureStore({
 });
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistStore(store)}>
-        <App />
-      </PersistGate>
-    </Provider>
-  </React.StrictMode>,
+  // <React.StrictMode>
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistStore(store)}>
+      <App />
+    </PersistGate>
+  </Provider>
+  // </React.StrictMode>,
 )

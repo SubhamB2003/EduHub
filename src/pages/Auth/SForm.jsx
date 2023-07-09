@@ -10,27 +10,34 @@ import Dropzone from "react-dropzone";
 import { useDispatch } from "react-redux";
 import { useNavigate } from 'react-router-dom';
 import * as yup from "yup";
+import done from "../../assets/sounds/done.mp3";
 import Flexbetween from "../../components/Flexbetween";
 import { setLogin } from "../../global/State";
 
 
 const loginSchema = yup.object().shape({
     email: yup.string().email("email required").required("email must be required"),
-    password: yup.string().required("password must be required").min(5, "password must be greater then 5 character")
+    password: yup.string().required("password must be required").min(5, "password must be greater then 8 character")
 });
 
 const registerSchema = yup.object().shape({
     fName: yup.string().required("firstname required"),
     lName: yup.string().required("lastname required"),
+    userName: yup.string().required("username required"),
     email: yup.string().email("Invalid email").required("email required"),
-    password: yup.string().required("password required").min(5, "password must be greater then 5 character"),
-    phone: yup.string().required("phone number required").min(10, "number must be 10 digit").max(10, "number must be 10 digit"),
-    pinCode: yup.string().required("pincode required"),
-    role: yup.string().required("role required"),
-    dateOfBirth: yup.date().required("date of birth required"),
-    bloodGroup: yup.string().required("blood group required"),
+    password: yup.string().required("password required").min(8, "password must be greater then 8 character"),
     gender: yup.string().required("gender required"),
-    about: yup.string(),
+    phone: yup.string().required("phone number required").min(10, "number must be 10 digit").max(10, "number must be 10 digit"),
+    bloodGroup: yup.string().required("blood group required"),
+    dateOfBirth: yup.string().required("date of birth required"),
+    pinCode: yup.string().required("pincode required"),
+    about: yup.string().required("about required"),
+    institutionName: yup.string().required("institution name required"),
+    institutionType: yup.string().required("institution type required"),
+    standard: yup.string().required("standard required"),
+    degree: yup.string().required("degree required"),
+    discipline: yup.string().required("discipline required"),
+    specialization: yup.string().required("specialization required"),
 });
 
 const initialRegisterValues = {
@@ -38,13 +45,19 @@ const initialRegisterValues = {
     lName: "",
     email: "",
     password: "",
+    userName: "",
     phone: "",
-    role: "1",
     bloodGroup: "6",
     dateOfBirth: "",
     pinCode: "",
     gender: "Male",
     about: "",
+    institutionName: "",
+    institutionType: "0",
+    degree: "",
+    discipline: "",
+    specialization: "",
+    standard: ""
 };
 
 
@@ -59,9 +72,14 @@ function SForm() {
     const isRegister = pageType === "register";
     const [visible, setVisible] = useState(false);
 
+    const notificationBell = () => {
+        new Audio(done).play();
+    }
+
     const login = async (values) => {
 
-        const loggedIn = await axios.post(`${process.env.REACT_APP_URL}/auth/login`, values).catch(() => {
+        notificationBell();
+        const loggedIn = await axios.post(`${import.meta.env.VITE_REACT_APP_URL}/user/student/login`, values).catch(() => {
             window.alert("Invalid authentication");
         });
 
@@ -83,17 +101,18 @@ function SForm() {
             maxWidthOrHeight: 1920,
             useWebWorker: true
         }
-        const compressImage = await imageCompression(values.picture, options);
-        const userPicture = new File([compressImage], values.picture.name);
+        const compressImage = await imageCompression(values.image, options);
+        const userPicture = new File([compressImage], values.image.name);
 
+        console.log(values);
         for (let value in values) {
-            if (value !== "picture") {
+            if (value !== "image") {
                 formData.append(value, values[value]);
             }
         }
-        formData.append("picture", userPicture);
+        formData.append("image", userPicture);
 
-        const savedUserRes = await axios.post(`${process.env.REACT_APP_URL}/auth/register`, formData).catch(() => {
+        const savedUserRes = await axios.post(`${import.meta.env.VITE_REACT_APP_URL}/user/student/register`, formData).catch(() => {
             window.alert("Fill the mandatory fields");
         })
         if (savedUserRes) {
@@ -162,6 +181,12 @@ function SForm() {
                                     error={Boolean(touched.lName) && Boolean(errors.lName)}
                                     helperText={touched.lName && errors.lName}
                                     sx={{ gridColumn: "span 2", input: { fontFamily: "serif", fontSize: "16px" } }} />
+                                <TextField autoComplete='off' label="Username" name="userName"
+                                    onBlur={handleBlur} onChange={handleChange}
+                                    value={values.userName}
+                                    error={Boolean(touched.userName) && Boolean(errors.userName)}
+                                    helperText={touched.userName && errors.userName}
+                                    sx={{ gridColumn: "span 2", input: { fontFamily: "serif", fontSize: "16px" } }} />
                                 <TextField autoComplete='off' label="Phone number" name="phone"
                                     onBlur={handleBlur} onChange={handleChange}
                                     value={values.phone}
@@ -189,9 +214,9 @@ function SForm() {
                                     helperText={touched.dateOfBirth && errors.dateOfBirth}
                                     sx={{ gridColumn: "span 2", input: { fontFamily: "serif", fontSize: "16px" } }} />
                                 <FormControl sx={{ gridColumn: "span 2", fontFamily: "serif" }}>
-                                    <InputLabel id="demo-simple-select-label">Blood Group</InputLabel>
+                                    <InputLabel id="demo-simple-select-label1">Blood Group</InputLabel>
                                     <Select label="Blood Group"
-                                        labelId="demo-simple-select-label" id="demo-simple-select"
+                                        labelId="demo-simple-select-label1" id="demo-simple-select1"
                                         name="bloodGroup" onBlur={handleBlur} onChange={handleChange}
                                         value={values.bloodGroup}
                                         error={Boolean(touched.bloodGroup) && Boolean(errors.bloodGroup)}
@@ -202,52 +227,6 @@ function SForm() {
                                         ))}
                                     </Select>
                                 </FormControl>
-                                {/* <FormControl sx={{ gridColumn: "span 2" }}>
-                                    <InputLabel id="demo-simple-select-label">Role</InputLabel>
-                                    <Select label="Gender"
-                                        labelId="demo-simple-select-label" id="demo-simple-select"
-                                        name="gender" onBlur={handleBlur} onChange={handleChange}
-                                        value={values.role}
-                                        error={Boolean(touched.role) && Boolean(errors.role)}
-                                        helpertext={touched.role && errors.role}
-                                    >
-                                        <MenuItem value="1" sx={{ fontFamily: "serif" }}>Student</MenuItem>
-                                        <MenuItem value="2" sx={{ fontFamily: "serif" }}>Teacher</MenuItem>
-                                    </Select>
-                                </FormControl> */}
-                                <Box
-                                    gridColumn="span 4"
-                                    border={`1px solid ${palette.neutral.medium}`}
-                                    borderRadius="5px"
-                                    p="0.8rem"
-                                    required
-                                >
-                                    <Dropzone
-                                        acceptedFiles=".jpg,.jpeg,.png"
-                                        multiple={false}
-                                        onDrop={(acceptedFiles) =>
-                                            setFieldValue("picture", acceptedFiles[0])
-                                        }
-                                    >
-                                        {({ getRootProps, getInputProps }) => (
-                                            <Box
-                                                {...getRootProps()}
-                                                border={`2px dashed ${palette.primary.main}`}
-                                                sx={{ "&:hover": { cursor: "pointer" } }}
-                                            >
-                                                <input {...getInputProps()} />
-                                                {!values.picture ? (
-                                                    <p style={{ paddingLeft: "0.4rem" }}>Add Picture Here*</p>
-                                                ) : (
-                                                    <Flexbetween>
-                                                        <Typography>{values.picture.name}</Typography>
-                                                        <EditOutlinedIcon />
-                                                    </Flexbetween>
-                                                )}
-                                            </Box>
-                                        )}
-                                    </Dropzone>
-                                </Box>
                                 <TextField autoComplete='off' label="Pincode" name="pinCode"
                                     onBlur={handleBlur} onChange={handleChange}
                                     value={values.pinCode}
@@ -259,6 +238,87 @@ function SForm() {
                                     value={values.about}
                                     error={Boolean(touched.about) && Boolean(errors.about)}
                                     helperText={touched.about && errors.about}
+                                    sx={{ gridColumn: "span 2", input: { fontFamily: "serif", fontSize: "16px" } }} />
+                                <Box
+                                    gridColumn="span 2"
+                                    border={`1px solid ${palette.neutral.medium}`}
+                                    borderRadius="5px"
+                                    p="0.6rem"
+                                    required
+                                >
+                                    <Dropzone
+                                        acceptedFiles=".jpg,.jpeg,.png"
+                                        multiple={false}
+                                        onDrop={(acceptedFiles) =>
+                                            setFieldValue("image", acceptedFiles[0])
+                                        }
+                                    >
+                                        {({ getRootProps, getInputProps }) => (
+                                            <Box
+                                                {...getRootProps()}
+                                                border={`2px dashed ${palette.primary.main}`}
+                                                p="0.2rem"
+                                                height="100%"
+                                                sx={{ "&:hover": { cursor: "pointer" } }}
+                                            >
+                                                <input {...getInputProps()} />
+                                                {!values.image ? (
+                                                    <p style={{ paddingLeft: "0.4rem" }}>Add Picture Here*</p>
+                                                ) : (
+                                                    <Flexbetween>
+                                                        <Typography>{values.image.name}</Typography>
+                                                        <EditOutlinedIcon />
+                                                    </Flexbetween>
+                                                )}
+                                            </Box>
+                                        )}
+                                    </Dropzone>
+                                </Box>
+                                <TextField autoComplete='off' label="Institution name" name="institutionName"
+                                    onBlur={handleBlur} onChange={handleChange}
+                                    value={values.institutionName}
+                                    error={Boolean(touched.institutionName) && Boolean(errors.institutionName)}
+                                    helperText={touched.institutionName && errors.institutionName}
+                                    sx={{ gridColumn: "span 2", input: { fontFamily: "serif", fontSize: "16px" } }} />
+
+                                <FormControl sx={{ gridColumn: "span 2" }}>
+                                    <InputLabel id="demo-simple-select-label2">Institution Type</InputLabel>
+                                    <Select label="Institution Type"
+                                        labelId="demo-simple-select-label2" id="demo-simple-select2"
+                                        name="institutionType" onBlur={handleBlur} onChange={handleChange}
+                                        value={values.institutionType}
+                                        error={Boolean(touched.institutionType) && Boolean(errors.institutionType)}
+                                        helpertext={touched.institutionType && errors.institutionType}
+                                    >
+                                        <MenuItem value="0" sx={{ fontFamily: "serif" }}>school</MenuItem>
+                                        <MenuItem value="1" sx={{ fontFamily: "serif" }}>college</MenuItem>
+                                        <MenuItem value="2" sx={{ fontFamily: "serif" }}>university</MenuItem>
+                                        <MenuItem value="3" sx={{ fontFamily: "serif" }}>Others</MenuItem>
+                                    </Select>
+                                </FormControl>
+                                <TextField autoComplete='off' label="Degree" name="degree"
+                                    onBlur={handleBlur} onChange={handleChange}
+                                    value={values.degree}
+                                    error={Boolean(touched.degree) && Boolean(errors.degree)}
+                                    helperText={touched.degree && errors.degree}
+                                    sx={{ gridColumn: "span 2", input: { fontFamily: "serif", fontSize: "16px" } }} />
+                                <TextField autoComplete='off' label="Discipline" name="discipline"
+                                    onBlur={handleBlur} onChange={handleChange}
+                                    value={values.discipline}
+                                    error={Boolean(touched.discipline) && Boolean(errors.discipline)}
+                                    helperText={touched.discipline && errors.discipline}
+                                    sx={{ gridColumn: "span 2", input: { fontFamily: "serif", fontSize: "16px" } }} />
+                                <TextField autoComplete='off' label="specialization" name="specialization"
+                                    onBlur={handleBlur} onChange={handleChange}
+                                    value={values.specialization}
+                                    error={Boolean(touched.specialization) && Boolean(errors.specialization)}
+                                    helperText={touched.specialization && errors.specialization}
+                                    sx={{ gridColumn: "span 2", input: { fontFamily: "serif", fontSize: "16px" } }} />
+                                <TextField autoComplete='off' label="Standard" name="standard"
+                                    onBlur={handleBlur} onChange={handleChange}
+                                    value={values.standard}
+                                    error={Boolean(touched.standard) && Boolean(errors.standard)}
+                                    helperText={touched.standard && errors.standard}
                                     sx={{ gridColumn: "span 2", input: { fontFamily: "serif", fontSize: "16px" } }} />
                             </>
                         )}
@@ -279,6 +339,7 @@ function SForm() {
                             {isLogin ? "LOGIN" : "REGISTER"}
                         </Button>
                     </Box>
+
                     <Flexbetween>
                         <Typography
                             onClick={() => {
