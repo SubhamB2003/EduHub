@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { Box, useMediaQuery } from '@mui/material';
 import React from 'react';
+import BottomNav from '../../components/BottomNav';
 import LeftBar from '../../components/LeftBar';
 import NavBar from '../../components/NavBar';
 import RightBar from '../../components/RightBar';
@@ -30,6 +31,7 @@ function Home() {
                     <CreatePostWidget />
                     <Box m="2rem 0" />
                     <PostsWidget />
+                    <BottomNav />
                 </Box>
                 {isNonMobile && (
                     <Box flexBasis={isNonMobile && "28%"}>
