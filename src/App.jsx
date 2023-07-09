@@ -3,6 +3,7 @@ import { lazy, Suspense, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import "./App.css";
+import BookPage from "./pages/Books";
 import { themeSettings } from "./theme";
 
 
@@ -23,7 +24,7 @@ function App() {
 
   const mode = useSelector((state) => state.mode);
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
-  // const isAuth = Boolean(useSelector((state) => state.token));
+  const isAuth = Boolean(useSelector((state) => state.token));
 
   return (
     <ThemeProvider theme={theme}>
@@ -31,8 +32,8 @@ function App() {
       <BrowserRouter>
         <Suspense fallback={<LoadingScreen />}>
           <Routes>
-            <Route path='/home' element={<HomePage />} />
-            <Route path='/' element={<AuthPage />} />
+            <Route path='/' element={!isAuth ? <HomePage /> : <AuthPage />} />
+            <Route path='/books' element={<BookPage />} />
           </Routes>
         </Suspense>
       </BrowserRouter>
