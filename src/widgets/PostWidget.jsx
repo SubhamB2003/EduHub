@@ -1,10 +1,10 @@
 /* eslint-disable no-unused-vars */
 import React from 'react'
 
-function UserImage() {
+function PostWidget() {
     return (
-        <div>UserImage</div>
+        <div>PostWidget</div>
     )
 }
 
-export default UserImage
+export default PostWidget
